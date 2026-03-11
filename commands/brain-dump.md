@@ -1,237 +1,210 @@
 ---
-description: Paste a voice transcript or messy brain dump about an app idea. Get a structured plan with stack recommendation, Indian production costs, and phase-by-phase guidance using ECC workflows.
+description: Paste a voice transcript or messy brain dump about an app idea. Get a 10-stage pocket guide from idea to paid users — with stack pick, INR costs, and what to do at each stage.
 ---
 
-# Brain Dump Command
+# /brain-dump — Voice Idea to Live App in 10 Stages
 
-This command takes a raw voice transcript or unstructured brain dump and transforms it into a complete, actionable app development plan.
+Open your phone voice app, dump your brain, paste here. Claude handles the rest.
 
-## What This Command Does
+## Your Business Model
 
-1. **Parse the Brain Dump** - Extract requirements from messy voice transcript
-2. **Recommend Stack** - Pick the best tech stack based on your app's needs and ECC skill coverage
-3. **Estimate Costs** - Monthly production costs in INR for Indian deployment
-4. **Generate Phased Plan** - Step-by-step phases that chain into existing ECC commands
-5. **Guide Execution** - Walk you through each phase interactively
-
-## When to Use
-
-Use `/brain-dump` when:
-- You have a voice recording transcript of your app idea
-- You have scattered notes about what you want to build
-- You want to go from zero to a structured plan without writing anything formal
-- You need cost estimates before committing to a project
-
-## How It Works
-
-### Step 1: Paste Your Brain Dump
-
-Just paste your raw voice transcript or notes. It can be messy. Example:
+You build apps for **exclusive clients**. Each client gets a private link, pays monthly, and when payment stops — access stops. Your pricing covers all infra costs + your profit.
 
 ```
-ok so i want to build this app where people can upload their resumes
-and then ai reads the resume and matches them with jobs and also like
-companies can post jobs and the ai scores how good the match is
-and maybe a chat feature where candidates can talk to recruiters
-oh and it should work on mobile too
+You build it → Client gets link → Client pays via Razorpay → App works
+                                   Payment stops → "Renew" page shown
 ```
 
-### Step 2: Structured Requirements Extraction
+---
 
-The agent will parse your dump and output:
+## The 10 Stages
 
-```markdown
-## Extracted Requirements
+### Stage 1: Brain Dump
+**What**: Open Google Docs on phone → tap mic → talk about your app idea → copy-paste here
+**You say**: Everything in your head — messy is fine
+**Claude does**: Nothing yet, just receives your words
 
-### Core Features (Must Have)
-1. Resume upload and AI parsing
-2. Job posting by companies
-3. AI-powered job-candidate matching with scores
-4. Recruiter-candidate chat
+> **Tip**: Don't filter yourself. Say "maybe", "also", "oh and" — Claude will sort it.
 
-### Nice to Have
-1. Mobile-responsive or native app
+---
 
-### User Roles
-- Candidates (upload resume, browse jobs, chat)
-- Recruiters/Companies (post jobs, view matches, chat)
-- Admin (manage platform)
+### Stage 2: Requirements Extraction
+**What**: Claude cleans your transcript and extracts structure
+**You get**:
+- Core features (must-have) vs nice-to-have
+- User roles (who uses this, what can they do)
+- Technical signals (AI, file uploads, payments, real-time, etc.)
+- Questions about anything unclear
 
-### Technical Signals Detected
-- File upload (PDF parsing)
-- AI/LLM integration (resume parsing, matching)
-- Real-time features (chat)
-- Multi-tenant (companies)
+**You do**: Confirm or correct. Takes 2 minutes.
+
+---
+
+### Stage 3: Stack Selection
+**What**: Claude picks the best tech stack for YOUR app
+**Based on**:
+- What features you need (AI? real-time? file uploads?)
+- Which stack has the most ECC skill coverage (= better Claude guidance)
+- Indian hiring pool (if you ever need help)
+- Cost at your scale
+
+**You get**: Recommended stack + one alternative with trade-offs
+
+> **Your model note**: All stacks include Razorpay + access-gating middleware for your pay-to-access model.
+
+---
+
+### Stage 4: Cost Estimation (INR)
+**What**: Monthly production cost breakdown in Rupees
+**You get**:
+- Per-service cost (hosting, database, AI API, domain, email)
+- Three tiers: Prototype (free-₹500), Small (₹2,500-5,500), Medium (₹12,000-22,000)
+- AI cost optimization tips (Haiku-first routing saves 60-70%)
+- **Pricing formula**: What to charge your client so their payment covers infra + your margin
+
+**Example**:
+```
+Your cost per client:  ~₹3,400/mo
+You charge client:     ₹6,000-8,000/mo
+Your profit:           ₹2,600-4,600/mo per client
 ```
 
-### Step 3: Stack Recommendation
+---
 
-Based on extracted requirements, the agent recommends the optimal stack mapped to ECC skill coverage:
-
-```markdown
-## Recommended Stack
-
-| Layer | Technology | ECC Skills Available | Why |
-|-------|-----------|---------------------|-----|
-| Backend | Django + DRF | 6 skills (patterns, security, tdd, verification) | Best ECC coverage, great for multi-tenant |
-| Frontend | Next.js | 3 skills (frontend-patterns, coding-standards, e2e) | SSR for SEO, streaming for AI responses |
-| AI Layer | Anthropic SDK | cost-aware-llm-pipeline, claude-api | Resume parsing, matching logic |
-| Database | PostgreSQL + pgvector | postgres-patterns, database-migrations | Embeddings for semantic matching |
-| Chat | Supabase Realtime | postgres-patterns | Real-time with zero infra |
-| Deploy | Railway or AWS Mumbai | docker-patterns, deployment-patterns | Cheapest India region |
-```
-
-### Step 4: Cost Estimation (India)
-
-```markdown
-## Monthly Production Costs (INR)
-
-### Small Scale (0-1000 users)
-| Service | Provider | Plan | Cost/mo |
-|---------|----------|------|---------|
-| Backend hosting | Railway | Starter | ~₹400 (free tier) |
-| Database | Supabase | Free | ₹0 |
-| AI API (Claude) | Anthropic | Pay-as-you-go | ~₹2,000-5,000 |
-| Domain (.in) | GoDaddy | Annual | ~₹100/mo |
-| Email (transactional) | Resend | Free tier | ₹0 |
-| File storage | Supabase Storage | Free tier | ₹0 |
-| **Total** | | | **₹2,500-5,500/mo** |
-
-### Medium Scale (1K-10K users)
-| Service | Provider | Plan | Cost/mo |
-|---------|----------|------|---------|
-| Backend hosting | Railway / AWS Mumbai | Pro | ~₹1,500-4,000 |
-| Database | Supabase Pro | 25GB | ~₹2,000 |
-| AI API (Claude) | Anthropic | Haiku-first routing | ~₹8,000-15,000 |
-| CDN | Cloudflare | Free | ₹0 |
-| Domain | Route53 | Annual | ~₹100/mo |
-| Redis (cache/queue) | Upstash | Pay-as-you-go | ~₹500 |
-| File storage | S3 Mumbai | Pay-as-you-go | ~₹200 |
-| **Total** | | | **₹12,000-22,000/mo** |
-
-### Large Scale (10K-100K users)
-| Service | Provider | Plan | Cost/mo |
-|---------|----------|------|---------|
-| Backend hosting | AWS Mumbai (ECS) | t3.medium+ | ~₹8,000-15,000 |
-| Database | RDS PostgreSQL | db.t3.medium | ~₹6,000 |
-| AI API (Claude) | Anthropic | Batch + caching | ~₹25,000-80,000 |
-| CDN + WAF | Cloudflare Pro | | ~₹1,500 |
-| Redis | ElastiCache | cache.t3.micro | ~₹2,500 |
-| Monitoring | Grafana Cloud | Free tier | ₹0 |
-| **Total** | | | **₹43,000-1,05,000/mo** |
-```
-
-### Step 5: Phased Execution Plan
-
-The agent generates phases that chain directly into ECC commands:
-
-```markdown
-## Execution Phases
-
-### Phase 0: Foundation (Day 1)
-> Run: `/plan` with the structured requirements above
-- Project scaffolding (Django + Next.js)
+### Stage 5: Plan → `/plan`
+**What**: Turn requirements into a step-by-step build plan
+**ECC command**: `/plan`
+**You get**:
 - Database schema design
-- Authentication setup
-- **Exit criteria**: Can register, login, see empty dashboard
+- API endpoints list
+- Component breakdown
+- Phase-by-phase build order
+- Risk assessment
 
-### Phase 1: Core Feature - AI Resume Parsing (Days 2-4)
-> Run: `/tdd` for backend, then `/code-review`
-- Resume upload endpoint
-- PDF text extraction
-- Claude API integration for structured parsing
-- Store parsed data in PostgreSQL
-- **Exit criteria**: Upload PDF → get structured JSON back
+**You do**: Review the plan, say "proceed" or "modify X"
 
-### Phase 2: Job Posting & Matching (Days 5-7)
-> Run: `/tdd` for matching algorithm, then `/code-review`
-- Job CRUD for companies
-- Embedding generation (pgvector)
-- AI matching + scoring
-- **Exit criteria**: Post job → see ranked candidates with scores
+> **Your model note**: Plan includes `subscription` table, Razorpay webhook endpoint, and access-check middleware from the start.
 
-### Phase 3: Chat & Real-time (Days 8-9)
-> Run: `/tdd` then `/e2e` for chat flows
-- Supabase Realtime integration
-- Chat UI components
-- Notification system
-- **Exit criteria**: Recruiter can message candidate in real-time
+---
 
-### Phase 4: Polish & Deploy (Days 10-12)
-> Run: `/build-fix`, `/e2e`, then `/verify`
+### Stage 6: Build with TDD → `/tdd`
+**What**: Write tests first, then code — for each feature
+**ECC command**: `/tdd`
+**How it works**:
+- Claude writes a failing test for the feature
+- Claude writes minimal code to pass the test
+- Claude refactors
+- Repeat for next feature
+- Target: 80%+ test coverage
+
+**You do**: Watch, approve, or redirect. Each feature takes 15-60 mins with Claude.
+
+---
+
+### Stage 7: Code Review → `/code-review`
+**What**: Claude reviews its own code for quality, security, performance
+**ECC command**: `/code-review`
+**Catches**:
+- Security issues (SQL injection, XSS, exposed secrets)
+- Performance problems (N+1 queries, missing indexes)
+- Code quality (naming, structure, duplication)
+
+**You do**: Review the findings, approve fixes.
+
+---
+
+### Stage 8: E2E Testing → `/e2e`
+**What**: Test the app like a real user would
+**ECC command**: `/e2e`
+**Tests**:
+- Client signs up → pays → gets access → uses app
+- Client's payment expires → sees "renew" page
+- Core features work end-to-end
 - Mobile responsiveness
-- Error handling & edge cases
+
+**You do**: Verify the tests match your expected user flows.
+
+---
+
+### Stage 9: Deploy → `/verify`
+**What**: Put it live on the internet
+**ECC command**: `/build-fix` (if errors) → `/verify`
+**Steps**:
 - Docker containerization
-- Deploy to Railway/AWS Mumbai
-- **Exit criteria**: Live URL, all E2E tests pass
+- Deploy to Railway / AWS Mumbai
+- Connect custom domain
+- SSL certificate (free via Let's Encrypt)
+- Set up Razorpay webhooks for live payments
 
-### Phase 5: Production Hardening
-> Run: `/code-review` + security-reviewer agent
-- Rate limiting
-- Input validation
-- Security audit
-- Monitoring setup
-- **Exit criteria**: Security scan clean, monitoring active
-```
+**You get**: A live URL you can share with your first client.
 
-## Example Usage
+---
 
-```
-User: /brain-dump
+### Stage 10: Harden + Monitor
+**What**: Make it production-safe and track everything
+**ECC agent**: `security-reviewer`
+**Includes**:
+- Rate limiting (prevent abuse)
+- Input validation (prevent attacks)
+- Error monitoring (know when things break)
+- Usage tracking per client (know your real cost per client)
+- Auto-alerts if a client's usage spikes
 
-ok so i want to make a tool where freelancers can track their invoices
-and clients and it should automatically generate invoices as pdf
-and maybe send them via email and also track which invoices are paid
-or pending and show some analytics like monthly revenue and top clients
-and it should be cheap to run because im just starting out
+**You do**: Run security scan, set up alerts, then hand the link to your client.
 
-Agent:
-[Parses transcript]
-[Recommends: FastAPI + Next.js + Supabase (lightest stack for solo dev)]
-[Estimates: ₹400-2,500/mo at small scale]
-[Generates 4-phase plan with /tdd → /code-review → /e2e → /verify chain]
-```
+---
 
-## Integration with ECC Workflow
-
-This command orchestrates the complete ECC pipeline:
+## Quick Reference Card
 
 ```
-/brain-dump (this command)
-    ↓ extracts requirements
-    ↓ recommends stack + estimates cost
-    ↓ generates phased plan
-    ↓
-/plan (refine each phase)
-    ↓
-/tdd (implement with tests first)
-    ↓
-/code-review (review implementation)
-    ↓
-/build-fix (fix any build errors)
-    ↓
-/e2e (end-to-end tests)
-    ↓
-/verify (final verification)
+Stage  What               Command/Agent         Time
+─────  ─────────────────  ────────────────────  ──────
+  1    Brain Dump         (voice app → paste)   5 min
+  2    Requirements       (Claude parses)       5 min
+  3    Stack Pick         (Claude recommends)   2 min
+  4    Cost Estimate      (Claude calculates)   2 min
+  5    Plan               /plan                 15 min
+  6    Build              /tdd                  2-5 days
+  7    Code Review        /code-review          30 min
+  8    E2E Tests          /e2e                  1-2 hrs
+  9    Deploy             /verify               1-2 hrs
+ 10    Harden             security-reviewer     1-2 hrs
 ```
 
-## Voice-to-Text Setup
+**Total**: From brain dump to live app with paying client = ~1-2 weeks with Claude Code
 
-Use any free voice app on your phone to transcribe, then paste:
+---
 
-| Platform | App | Cost |
-|----------|-----|------|
-| Android | Google Recorder / Otter.ai | Free |
-| iOS | Voice Memos + Live Transcription | Free |
-| Any | WhatsApp voice → transcribe | Free |
-| Any | Whisper (OpenAI) via app | Free |
+## Voice-to-Text (Free)
 
-**Pro tip**: Just open Google Docs on your phone, tap the microphone icon, and talk. Copy-paste the text into Claude.
+| Method | How |
+|--------|-----|
+| **Simplest** | Google Docs on phone → tap mic → talk → copy text |
+| **Android** | Google Recorder (free, offline, Hindi + English) |
+| **iOS** | Voice Memos + Live Transcription (iOS 17+) |
+| **Hinglish** | Google voice typing handles mixed Hindi-English well |
 
-## Related
+---
 
-- `/plan` - Detailed implementation planning
-- `/tdd` - Test-driven development
-- `/blueprint` - Multi-session project planning
-- `cost-aware-llm-pipeline` skill - Optimize AI API costs
-- `app-inception` agent - Powers this command
+## Your Pricing Cheat Sheet
+
+| App Complexity | Your Infra Cost | Charge Client | Your Profit |
+|---------------|----------------|---------------|-------------|
+| Simple (no AI) | ₹400-1,000/mo | ₹2,000-3,000/mo | ₹1,000-2,000 |
+| AI-powered (Haiku) | ₹3,000-5,500/mo | ₹6,000-8,000/mo | ₹2,500-4,500 |
+| AI-heavy (Sonnet mix) | ₹8,000-15,000/mo | ₹15,000-25,000/mo | ₹7,000-10,000 |
+
+> Rule of thumb: Charge 2-3x your infra cost. The AI API is always your biggest expense — use `cost-aware-llm-pipeline` skill to keep it down.
+
+---
+
+## Related Commands
+
+| Command | When to Use |
+|---------|------------|
+| `/plan` | Stage 5 — detailed planning |
+| `/tdd` | Stage 6 — test-driven building |
+| `/code-review` | Stage 7 — quality check |
+| `/e2e` | Stage 8 — end-to-end tests |
+| `/build-fix` | Stage 9 — fix deploy errors |
+| `/verify` | Stage 9 — final verification |
