@@ -148,13 +148,75 @@ These rules specifically prevent common AI code generation problems:
 
 ---
 
-## Available Commands
+## Available Commands — Full Reference (43 Commands)
 
+### Core Workflow (use these every time)
 | Command | When to Use |
 |---------|------------|
 | `/plan` | Starting any new feature or significant change |
 | `/tdd` | Implementing features, fixing bugs, writing tests |
 | `/code-review` | Before committing — security + quality review |
 | `/build-fix` | When build/type errors occur |
-| `/e2e` | Testing critical user flows end-to-end |
-| `/learn` | End of session — extract patterns for future use |
+| `/e2e` | Generate and run E2E tests for critical flows |
+| `/test-coverage` | Verify test coverage meets 80%+ threshold |
+| `/quality-gate` | Run quality gate checks before merging |
+| `/verify` | Run the full verification loop |
+
+### Planning & Architecture
+| Command | When to Use |
+|---------|------------|
+| `/multi-plan` | Multi-model collaborative planning |
+| `/multi-backend` | Backend-focused development |
+| `/multi-frontend` | Frontend-focused development |
+| `/multi-execute` | Multi-model collaborative execution |
+| `/multi-workflow` | Multi-model collaborative development |
+| `/orchestrate` | Orchestrate complex multi-step workflows |
+| `/model-route` | Route to specific models for different tasks |
+
+### Session Management
+| Command | When to Use |
+|---------|------------|
+| `/save-session` | Save current session state |
+| `/resume-session` | Resume from a previously saved session |
+| `/sessions` | List all saved sessions |
+| `/checkpoint` | Create a mid-session checkpoint |
+| `/claw` | Start NanoClaw REPL for persistent sessions |
+
+### Learning & Improvement
+| Command | When to Use |
+|---------|------------|
+| `/learn` | End of session — extract reusable patterns |
+| `/learn-eval` | Extract patterns with self-evaluation |
+| `/skill-create` | Generate skills from git history |
+| `/eval` | Run capability evaluations |
+| `/evolve` | Analyze and improve existing code/patterns |
+| `/instinct-export` | Export learned instincts to a file |
+| `/instinct-import` | Import instincts from file or URL |
+| `/instinct-status` | Show learned instincts with confidence levels |
+
+### Code Maintenance
+| Command | When to Use |
+|---------|------------|
+| `/refactor-clean` | Clean up dead code and technical debt |
+| `/update-docs` | Update documentation |
+| `/update-codemaps` | Update code maps |
+| `/promote` | Promote project-scoped instincts to global |
+| `/projects` | List known projects and their stats |
+
+### Language-Specific Reviews
+| Command | When to Use |
+|---------|------------|
+| `/python-review` | Python code review |
+| `/go-review` | Go code review |
+| `/go-build` | Fix Go build errors |
+| `/go-test` | Go TDD workflow |
+| `/gradle-build` | Fix Gradle/Android build errors |
+
+### DevOps & Operations
+| Command | When to Use |
+|---------|------------|
+| `/pm2` | PM2 process management |
+| `/setup-pm` | Set up package manager |
+| `/harness-audit` | Audit harness configuration |
+| `/loop-start` | Start autonomous agent loop |
+| `/loop-status` | Check autonomous loop status |
