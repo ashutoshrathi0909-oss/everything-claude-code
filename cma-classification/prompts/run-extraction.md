@@ -15,10 +15,23 @@ For each company file, extract every mapping between financial statement line it
 
 ### STEP-BY-STEP PROCESS
 
-#### Phase 0: Setup
+#### Phase 0: Setup + Template Parsing (runs ONCE)
+
 1. Run `pip install openpyxl` if not already installed
-2. List all `.xlsx` and `.pdf` files in this folder to identify the 9 companies
+2. List all `.xlsx` and `.pdf` files in this folder to identify the 9 companies and the CMA template file
 3. Read `prompts/subagent-1-sonnet-ocr.md`, `prompts/subagent-2-cma-extractor.md`, and `prompts/main-opus-reverse-engineer.md` — these contain the detailed instructions for each step
+
+**Parse the CMA template (one-time)**:
+```bash
+python scripts/parse_excel.py "CMA_Template.xlsx" --output cma_template_parsed.json
+```
+Then dispatch a Sonnet subagent to analyze the parsed template:
+- **Subagent (Template Analyzer)**: Use the Agent tool with `model: "sonnet"`. In the prompt, include:
+  - The parsed template JSON
+  - Ask it to produce a `cma_template_reference.json` with every CMA row number, field name, section, whether it's a subtotal, and what rows feed into it
+  - Save the output as `cma_template_reference.json`
+
+This reference is reused for ALL 9 companies — never re-parsed.
 
 #### Phase 1: Process Each Company
 
@@ -36,7 +49,8 @@ Launch both subagents in a single message:
 
 - **Subagent A (CMA Extraction)**: Use the Agent tool with `model: "sonnet"`. In the prompt, include:
   - The full instructions from `prompts/subagent-2-cma-extractor.md`
-  - The parsed Excel JSON data (from Step 1)
+  - The `cma_template_reference.json` (from Phase 0) — this is the row reference
+  - The parsed company Excel JSON data (from Step 1)
   - Ask it to return the CMA extraction as JSON
 
 - **Subagent B (PDF OCR)**: ONLY if a separate PDF file exists for this company. Use the Agent tool with `model: "sonnet"`. In the prompt, include:
