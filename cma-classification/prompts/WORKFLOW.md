@@ -1,49 +1,86 @@
-# Ground Truth Extraction Workflow
+# Ground Truth Extraction Workflow — Single Session
 
-## Per Company — Step by Step
+## Overview
 
-### STEP 1: Dispatch Subagents (parallel, ~5-10 min each)
+Run everything from **one Claude Code session** (Opus). Subagents handle mechanical extraction in their own context windows — only compact JSON comes back. Opus keeps its full context free for reverse engineering.
 
-**Subagent 2 — CMA Extraction (ALWAYS run this)**
-1. Open a fresh Sonnet window
-2. Upload the Excel workbook
-3. Paste the prompt from `subagent-2-cma-extractor.md`
-4. Save output as `{company}_cma.json`
+```
+YOUR CLAUDE CODE SESSION (Opus)
+  │
+  ├─→ Sonnet Subagent: CMA Extraction (fresh context, reads Excel via script)
+  ├─→ Sonnet Subagent: PDF OCR (fresh context, only if PDF exists)
+  │   (both run in PARALLEL)
+  │
+  └─→ Opus: Reverse engineering (full context, receives subagent JSONs automatically)
+      └─→ Saves {company}_ground_truth.json
+```
 
-**Subagent 1 — OCR (ONLY if separate PDF exists)**
-1. Open another fresh Sonnet window
-2. Upload the PDF
-3. Paste the prompt from `subagent-1-sonnet-ocr.md`
-4. Save output as `{company}_financials.json`
+## Prerequisites
 
-> Both can run at the same time. Start Company B's subagents while Company A's Opus is working.
+1. Open Claude Code in your CMA project folder (where all 9 company files are)
+2. Install openpyxl: `pip install openpyxl`
+3. Make sure `scripts/parse_excel.py` is in the folder (extracts Excel data as JSON)
 
-### STEP 2: Main Opus Window (~20-30 min)
+## How to Run
 
-1. Open a **FRESH** Opus context window
-2. Upload the Excel workbook
-3. Open `main-opus-reverse-engineer.md`
-4. Replace the placeholders:
-   - `{PASTE_SUBAGENT_2_OUTPUT_HERE}` → paste CMA JSON from Step 1
-   - `{PASTE_SUBAGENT_1_OUTPUT_HERE}` → paste OCR JSON (or use Option B)
-   - `{industry}`, `{entity_type}`, `{financial_year}` → fill in
-5. Paste the complete prompt
-6. Let Opus work through all 5 phases
+### Option A: Process All 9 Companies (Recommended)
+Paste the contents of `run-extraction.md` into Claude Code. It will:
+1. Scan the folder for company files
+2. Process each company one by one
+3. For each: dispatch subagents → reverse engineer → save JSON
+4. After all 9: merge into `ground_truth_database.json`
 
-### STEP 3: Validate (~5 min)
+### Option B: Process One Company at a Time
+Tell Claude Code:
+```
+Process [company filename].xlsx using the prompts in the prompts/ folder.
+Run parse_excel.py first to extract the sheets, then dispatch Sonnet subagents
+for CMA extraction (and PDF OCR if a PDF exists for this company).
+Then do the Opus reverse engineering and save as {company}_ground_truth.json.
+```
 
+## Per-Company Flow (What Happens Automatically)
+
+### Step 1: Parse Excel (~seconds)
+```bash
+python scripts/parse_excel.py "Company File.xlsx" --output company_sheets.json
+```
+Converts binary .xlsx → readable JSON that subagents can process.
+
+### Step 2: Dispatch Subagents (parallel, ~2-5 min each)
+
+**Subagent A — CMA Extraction** (always runs)
+- Model: Sonnet (via Agent tool)
+- Reads the parsed Excel JSON
+- Extracts CMA row numbers, field names, amounts
+- Returns structured JSON
+
+**Subagent B — PDF OCR** (only if separate PDF exists)
+- Model: Sonnet (via Agent tool)
+- Reads the PDF using Claude's Read tool
+- Extracts P&L, Balance Sheet, Notes, Depreciation Schedule
+- Returns structured JSON
+
+Both subagents run in parallel. Neither consumes the main context window.
+
+### Step 3: Opus Reverse Engineering (~10-20 min)
+Opus receives both subagent outputs automatically. It:
+- Cross-references CMA amounts ↔ financial statement line items
+- Handles direct matches, composites (many→one), and splits (one→many)
+- Flags industry-specific placements
+- Validates all amounts (components must sum to CMA totals)
+- Outputs `{company}_ground_truth.json`
+
+### Step 4: Validate (~2 min)
 Check the output:
-- [ ] `unmatched_rows` — should be <5 rows (ideally 0)
-- [ ] `validation_issues` — any amount mismatches? Rounding is OK, big differences are NOT
-- [ ] `industry_specific_entries` — make sure the industry notes make sense
-- [ ] Spot-check 10-15 entries against the original Excel
-- [ ] Save as `{company}_ground_truth.json`
+- `unmatched_rows` — should be <5 rows
+- `validation_issues` — rounding OK, big mismatches NOT OK
+- `industry_specific_entries` — do the notes make sense?
+- Spot-check 10-15 entries against the original Excel
 
-### STEP 4: Repeat for all 9 companies
+## After All 9 Companies
 
-## After All Companies
-
-Run the merge script to combine all JSON files into one database:
+The merge script combines all JSON files:
 
 ```python
 import json, glob
@@ -54,7 +91,7 @@ for f in glob.glob("*_ground_truth.json"):
     print(f"{f}: {len(data['database_entries'])} entries, "
           f"{len(data['company_metadata']['unmatched_rows'])} unmatched")
     for entry in data["database_entries"]:
-        entry.pop("company_name", None)  # safety: strip company names
+        entry.pop("company_name", None)
         all_entries.append(entry)
 
 with open("ground_truth_database.json", "w") as f:
@@ -68,16 +105,14 @@ print(f"Unmatched: {sum(1 for e in all_entries if e['match_type'] == 'unmatched'
 print(f"Industry-specific: {sum(1 for e in all_entries if e.get('industry_specific'))}")
 ```
 
-Expected output: ~2000-4000 entries across 9 companies.
+Expected: ~2000-4000 entries across 9 companies.
 
-## Time Estimate
+## File Reference
 
-| Task | Per Company | Total (9 companies) |
-|------|------------|---------------------|
-| Subagent 1 (OCR) | 5-10 min | Parallel with Subagent 2 |
-| Subagent 2 (CMA) | 5-10 min | Parallel with Subagent 1 |
-| Opus (Reverse Eng.) | 20-30 min | Can pipeline |
-| Validation | 5 min | 45 min |
-| **Total** | **~35-45 min** | **~4-6 hours** |
-
-With pipelining (start next company's subagents while current Opus is running), total wall-clock time is closer to **3-4 hours**.
+| File | Purpose |
+|------|---------|
+| `run-extraction.md` | Master prompt — paste this to process all companies |
+| `subagent-1-sonnet-ocr.md` | PDF OCR subagent instructions |
+| `subagent-2-cma-extractor.md` | CMA extraction subagent instructions |
+| `main-opus-reverse-engineer.md` | Opus reverse engineering instructions |
+| `scripts/parse_excel.py` | Excel → JSON converter |

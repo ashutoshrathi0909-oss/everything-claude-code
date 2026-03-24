@@ -1,22 +1,14 @@
-# MAIN WINDOW: Opus Reverse Engineering — Build Ground Truth Database
+# Opus Reverse Engineering — Build Ground Truth Database
 
-> **Model**: Opus (maximum reasoning power)
-> **Context**: Main window — upload Excel workbook first, then paste subagent outputs + this prompt
-> **This is the core task.** Opus cross-references CMA with financials to build the database.
-
----
-
-## SETUP (do this before pasting the prompt)
-
-1. Upload the Excel workbook to this window
-2. Have ready:
-   - Output from Subagent 2 (CMA extraction JSON)
-   - Output from Subagent 1 (OCR JSON) — only if PDF financials exist
-3. Fill in the variables below before pasting
+> **Role**: This is the core reverse engineering task. Opus cross-references CMA data with financial statements to build the ground truth database.
+>
+> **In Claude Code**: This runs in the main window after subagents return their results. The CMA extraction JSON and financial statements JSON are already in your context from the subagent outputs.
+>
+> **Standalone**: If running manually, paste the subagent outputs into the placeholders below.
 
 ---
 
-## PROMPT (copy everything below this line)
+## INSTRUCTIONS
 
 You are a senior Chartered Accountant with 20+ years of experience in Indian financial reporting and CMA preparation. You are building a **ground truth database** that will power an AI classification system. Every entry you create will be used to teach the system how to map financial line items to CMA rows.
 
@@ -24,29 +16,21 @@ You are a senior Chartered Accountant with 20+ years of experience in Indian fin
 
 ## YOUR DATA SOURCES
 
-### SOURCE 1: CMA DOCUMENT (extracted by subagent)
-This is the completed CMA form with amounts in each standard CMA row.
+You have two data sources (provided by subagents or available in context):
 
-```json
-{PASTE_SUBAGENT_2_OUTPUT_HERE}
-```
+### SOURCE 1: CMA DOCUMENT
+The completed CMA form with amounts in each standard CMA row. This came from the CMA extraction subagent.
 
 ### SOURCE 2: FINANCIAL STATEMENTS
-{Choose one of these options and delete the other:}
-
-**Option A — If you have OCR output from Subagent 1:**
-```json
-{PASTE_SUBAGENT_1_OUTPUT_HERE}
-```
-
-**Option B — If financials are in the uploaded Excel workbook:**
-Read the financial detail from these sheets in the uploaded Excel: {LIST_SHEET_NAMES}
-Focus on: P&L, Balance Sheet, Notes to P&L, Notes to BS, Depreciation Schedule, and any Manufacturing/Trading account.
+The detailed P&L, Balance Sheet, Notes, and Depreciation Schedule. This came from either:
+- The PDF OCR subagent (if a separate PDF existed), OR
+- The parsed Excel sheets (read directly from the workbook)
 
 ### COMPANY CONTEXT
-- **Industry**: {manufacturing / services / trading / construction / other — specify}
-- **Entity type**: {private_limited / partnership / llp / proprietorship}
-- **Financial year**: {e.g., 2023-24}
+Identify from the data:
+- **Industry**: manufacturing / services / trading / construction / other
+- **Entity type**: private_limited / partnership / llp / proprietorship
+- **Financial year**: e.g., 2023-24
 
 ---
 
